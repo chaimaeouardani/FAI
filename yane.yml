@@ -1,0 +1,65 @@
+network:
+  name: projet_reseau_ouardani
+  version: 0.1
+  hosts:
+    - client
+      mode : netns
+      init : ./scripts/client
+ 
+    - box
+      mode : docker
+      image : dhcp_n7:latest
+      files : ./files/box/etc:/
+ 
+    - routeur_fai_acces
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/routeur_fai_acces/etc:/
+ 
+ 
+    - R1
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/R1/etc:/
+ 
+    - R2
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/R2/etc:/
+ 
+ 
+    - routeur_fai_service
+      mode : docker
+      image : quagga_n7:latest
+      files : ./files/routeur_fai_service/etc:/
+ 
+ 
+    - serveur_ftp
+      mode : docker
+      image : ftp_n7:latest
+      files : ./files/serveur_ftp/etc:/
+ 
+    - serveur_web
+      mode : docker
+      image : apache_n7:latest
+      files : ./files/serveur_web/var:/
+ 
+    - serveur_dns
+      mode : docker
+      image : dns_n7:latest
+      files : ./files/serveur_dns/etc:/
+ 
+  links :
+    - client:eth0!box:eth0
+    - box:eth1!routeur_fai_acces:eth0
+ 
+  bridges:
+    - Switch0
+      interfaces: R2:eth0!R1:eth0!routeur_fai_acces:eth1!
+    - Switch1
+      interfaces: routeur_fai_service:eth0!R2:eth1!R1:eth1!
+    - Switch2
+      interfaces: serveur_dns:eth0!serveur_web:eth0!serveur_ftp:eth0!routeur_fai_service:eth1!
+ 
+  consoles :
+    - all

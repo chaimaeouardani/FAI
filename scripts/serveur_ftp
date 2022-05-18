@@ -1,0 +1,41 @@
+#!/bin/bash
+
+
+ip link set dev eth0 up
+ip addr add 200.2.255.196/26 dev eth0
+
+
+ip route add default via 200.2.255.193
+
+#echo 1 > /proc/sys/net/ipv4/ip_forward
+#ip route add 200.2.255.64/26 via 200.2.255.193
+#ip route add 200.2.255.0/26 via 200.2.255.193
+#ip route add 200.2.255.128/26 via 200.2.255.193
+#ip route add 192.168.198.128/25 via 200.2.255.193
+
+
+# utilisateur 
+useradd couardan
+
+# mdp utilisateur 
+echo "couardan:couardan" | chpasswd
+
+mkdir /home/couardan
+
+# Définir le propriétaire 
+chown couardan /home/couardan
+usermod --shell /bin/bash couardan
+
+# Lancer le serveur ftp
+hostname serveur_ftp
+echo "200.2.255.196 serveur_ftp" >> /etc/hosts
+
+#Interdire l'ecriture 
+chmod o-w /etc/proftpd/ etc/proftpd/modules.conf etc/proftpd/proftpd.conf 
+
+
+service proftpd start
+
+# Test
+TMP="----------------- Bienvenue Chaimae ! Le serveur FTP marche ----------------------"
+echo -e "$TMP" >> /home/couardan/msg.txt

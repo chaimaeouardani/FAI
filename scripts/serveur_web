@@ -1,0 +1,16 @@
+#!/bin/bash
+
+ip link set dev eth0 up
+ip addr add 200.2.255.195/26 dev eth0
+
+ip route add default via 200.2.255.193
+
+#echo 1 > /proc/sys/net/ipv4/ip_forward
+#ip route add 200.2.255.64/26 via 200.2.255.193
+#ip route add 200.2.255.0/26 via 200.2.255.193
+#ip route add 200.2.255.128/26 via 200.2.255.193
+#ip route add 192.168.198.128/25 via 200.2.255.193
+
+service apache2 start
+
+

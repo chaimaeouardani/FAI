@@ -1,0 +1,36 @@
+#!/bin/bash
+
+
+ip link set dev eth0 up
+ip addr add 192.168.198.129/25 dev eth0
+dhclient eth0 &
+
+ip route add default via 192.168.198.130 dev eth0
+
+
+#ip route add 200.2.255.64/26 via 192.168.198.130
+#ip route add 200.2.255.0/26 via 192.168.198.130
+#ip route add 200.2.255.128/26 via 192.168.198.130
+#ip route add 200.2.255.192/26 via 192.168.198.130
+
+
+# Add server DNS address IP
+echo "nameserver 200.2.255.194" > /etc/resolv.conf
+
+
+# Test DNS
+#dig www.chaimaeouardani.com
+dig -x 200.2.255.194
+
+# Test HTTP server
+wget 200.2.255.195
+
+# Test FTP server
+wget --user=couardan --password='couardan' ftp://200.2.255.196/msg.txt
+
+
+
+
+
+
+
